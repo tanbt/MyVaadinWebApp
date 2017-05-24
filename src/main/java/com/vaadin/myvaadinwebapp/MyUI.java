@@ -6,14 +6,18 @@ import javax.servlet.annotation.WebServlet;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
+import com.vaadin.server.FontAwesome;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
+import com.vaadin.shared.ui.ValueChangeMode;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * This UI is the application entry point. A UI may either represent a browser window 
@@ -27,7 +31,8 @@ public class MyUI extends UI {
 	
 	private CustomerService service = CustomerService.getInstance();
 	private Grid<Customer> grid = new Grid<>(Customer.class);
-
+	private TextField filterText = new TextField();
+	
     @Override
     protected void init(VaadinRequest vaadinRequest) {
         final VerticalLayout layout = new VerticalLayout();
@@ -44,17 +49,27 @@ public class MyUI extends UI {
         layout.addComponents(name, button);*/
         
         
+        filterText.setPlaceholder("Filter by name...");
+        filterText.addValueChangeListener(e -> updateList());
+        filterText.setValueChangeMode(ValueChangeMode.LAZY);
+        Button clearFilterTextBtn = new Button(FontAwesome.TIMES);
+        clearFilterTextBtn.setDescription("Clear the current filter");
+        clearFilterTextBtn.addClickListener(e -> filterText.clear());
+        
+        CssLayout filtering = new CssLayout();
+        filtering.addComponents(filterText, clearFilterTextBtn);
+        filtering.setStyleName(ValoTheme.LAYOUT_COMPONENT_GROUP);
         
         grid.setColumns("firstName", "lastName", "email");
         updateList();
         
-        layout.addComponent(grid);
+        layout.addComponents(grid, filtering);
         setContent(layout);
     }
 
     private void updateList() {
         
-        List<Customer> customers = service.findAll();
+        List<Customer> customers = service.findAll(filterText.getValue());
         grid.setItems(customers);
 	}
 
