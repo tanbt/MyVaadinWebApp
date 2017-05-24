@@ -58,9 +58,17 @@ public class MyUI extends UI {
         clearFilterTextBtn.setDescription("Clear the current filter");
         clearFilterTextBtn.addClickListener(e -> filterText.clear());
         
+        Button addCustomerBtn = new Button("Add new customer");
+        addCustomerBtn.addClickListener(e -> {
+            grid.asSingleSelect().clear();
+            form.setCustomer(new Customer());
+        });
+        
         CssLayout filtering = new CssLayout();
         filtering.addComponents(filterText, clearFilterTextBtn);
         filtering.setStyleName(ValoTheme.LAYOUT_COMPONENT_GROUP);
+        
+        HorizontalLayout toolbar = new HorizontalLayout(filtering, addCustomerBtn);
         
         grid.setColumns("firstName", "lastName", "email");
         updateList();
@@ -79,7 +87,7 @@ public class MyUI extends UI {
         form.setSizeFull();
         //main.setExpandRatio(grid, 1);		//This line will hide the form (the second element)
 
-        layout.addComponents(filtering, main);
+        layout.addComponents(toolbar, main);
         setContent(layout);
     }
 
