@@ -64,7 +64,15 @@ public class MyUI extends UI {
         
         grid.setColumns("firstName", "lastName", "email");
         updateList();
+        grid.asSingleSelect().addValueChangeListener(event -> {
+            if (event.getValue() == null) {
+                form.setVisible(false);
+            } else {
+                form.setCustomer(event.getValue());
+            }
+        });
 
+        form.setVisible(false);
         HorizontalLayout main = new HorizontalLayout(grid, form);
         main.setSizeFull();
         grid.setSizeFull();
@@ -75,7 +83,7 @@ public class MyUI extends UI {
         setContent(layout);
     }
 
-    private void updateList() {
+    public void updateList() {
         
         List<Customer> customers = service.findAll(filterText.getValue());
         grid.setItems(customers);
