@@ -13,6 +13,7 @@ import com.vaadin.shared.ui.ValueChangeMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Grid;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
@@ -32,6 +33,7 @@ public class MyUI extends UI {
 	private CustomerService service = CustomerService.getInstance();
 	private Grid<Customer> grid = new Grid<>(Customer.class);
 	private TextField filterText = new TextField();
+	private CustomerForm form = new CustomerForm(this);
 	
     @Override
     protected void init(VaadinRequest vaadinRequest) {
@@ -62,8 +64,14 @@ public class MyUI extends UI {
         
         grid.setColumns("firstName", "lastName", "email");
         updateList();
-        
-        layout.addComponents(grid, filtering);
+
+        HorizontalLayout main = new HorizontalLayout(grid, form);
+        main.setSizeFull();
+        grid.setSizeFull();
+        form.setSizeFull();
+        //main.setExpandRatio(grid, 1);		//This line will hide the form (the second element)
+
+        layout.addComponents(filtering, main);
         setContent(layout);
     }
 
