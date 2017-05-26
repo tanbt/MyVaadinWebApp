@@ -12508,5 +12508,8 @@ div.v-layout.v-horizontal.v-widget {
 
 .mytheme .bold {
 	font-weight: bold !important;
+}
+
+.mytheme .red {
 	color: red;
 }
