@@ -12506,6 +12506,7 @@ div.v-layout.v-horizontal.v-widget {
 	background-color: #A0B8DE !important;
 }
 
-.mytheme .dropdown {
+.mytheme .bold {
 	font-weight: bold !important;
+	color: red;
 }
