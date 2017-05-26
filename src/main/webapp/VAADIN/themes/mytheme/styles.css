@@ -12501,3 +12501,11 @@ div.v-layout.v-horizontal.v-widget {
 	width: 19px;
 	overflow: hidden;
 }
+
+.mytheme .my-theme-body {
+	background-color: #A0B8DE !important;
+}
+
+.mytheme .dropdown {
+	font-weight: bold !important;
+}
