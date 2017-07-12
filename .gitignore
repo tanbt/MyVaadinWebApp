@@ -3,3 +3,4 @@ target/*
 .settings/*
 .vaadin-designer2/*
 *.iml
+src/main/webapp/VAADIN/themes/mytheme/styles.css

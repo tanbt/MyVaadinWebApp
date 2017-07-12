@@ -1,14 +1,21 @@
 package com.vaadin.myvaadinwebapp;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 import javax.servlet.annotation.WebServlet;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
+import com.vaadin.data.TreeData;
+import com.vaadin.data.provider.DataProviderListener;
+import com.vaadin.data.provider.HierarchicalDataProvider;
+import com.vaadin.data.provider.HierarchicalQuery;
+import com.vaadin.data.provider.TreeDataProvider;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
+import com.vaadin.shared.Registration;
 import com.vaadin.shared.ui.ValueChangeMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CssLayout;
@@ -16,6 +23,7 @@ import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.Tree;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
@@ -52,7 +60,7 @@ public class MyUI extends UI {
         layout.addComponents(name, button);*/
         
         
-        filterText.setPlaceholder("Filter by name...");
+        /*filterText.setPlaceholder("Filter by name...");
         filterText.addValueChangeListener(e -> updateList());
         filterText.setValueChangeMode(ValueChangeMode.LAZY);
         Button clearFilterTextBtn = new Button(FontAwesome.TIMES);
@@ -89,6 +97,31 @@ public class MyUI extends UI {
         //main.setExpandRatio(grid, 1);		//This line will hide the form (the second element)
 
         layout.addComponents(toolbar, main);
+        */
+
+
+        // An initial planet tree
+        Tree<String> tree = new Tree<>();
+        TreeData<String> treeData = new TreeData<>();
+
+        // Couple of childless root items
+        treeData.addItem(null,"Mercury");
+        treeData.addItem(null,"Venus");
+
+        // Items with hierarchy
+        treeData.addItem(null,"Earth");
+        treeData.addItem("Earth","The Moon");
+        treeData.addItem("Earth","The Stars");
+
+        TreeDataProvider inMemoryDataProvider = new TreeDataProvider<>
+                (treeData);
+        tree.setDataProvider(inMemoryDataProvider);
+        tree.expand("Earth"); // Expand programmatically
+        layout.addComponent(tree);
+
+
+        // Tree Grid
+//        TreeDataProvider<Project> dataProvider = (TreeDataProvider<Project>) treeGrid.getDataProvider();
         setContent(layout);
     }
 
@@ -101,5 +134,44 @@ public class MyUI extends UI {
 	@WebServlet(urlPatterns = "/*", name = "MyUIServlet", asyncSupported = true)
     @VaadinServletConfiguration(ui = MyUI.class, productionMode = false)
     public static class MyUIServlet extends VaadinServlet {
+    }
+}
+
+class Project implements HierarchicalDataProvider {
+
+    @Override
+    public int getChildCount(HierarchicalQuery hierarchicalQuery) {
+        return 0;
+    }
+
+    @Override
+    public Stream fetchChildren(HierarchicalQuery hierarchicalQuery) {
+        return null;
+    }
+
+    @Override
+    public boolean hasChildren(Object o) {
+        return false;
+    }
+
+    @Override
+    public boolean isInMemory() {
+        return false;
+    }
+
+    @Override
+    public void refreshItem(Object o) {
+
+    }
+
+    @Override
+    public void refreshAll() {
+
+    }
+
+    @Override
+    public Registration addDataProviderListener(
+            DataProviderListener dataProviderListener) {
+        return null;
     }
 }
