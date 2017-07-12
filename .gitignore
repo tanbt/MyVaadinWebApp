@@ -1,1 +1,5 @@
 target/*
+.idea/*
+.settings/*
+.vaadin-designer2/*
+*.iml
