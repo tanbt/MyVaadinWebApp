@@ -1,6 +1,10 @@
 package com.vaadin.myvaadinwebapp;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Stream;
 
 import javax.servlet.annotation.WebServlet;
@@ -22,8 +26,10 @@ import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Tree;
+import com.vaadin.ui.TreeGrid;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
@@ -37,11 +43,12 @@ import com.vaadin.ui.themes.ValoTheme;
  */
 @Theme("mytheme")
 public class MyUI extends UI {
-	
-	private CustomerService service = CustomerService.getInstance();
-	private Grid<Customer> grid = new Grid<>(Customer.class);
-	private TextField filterText = new TextField();
-	private CustomerForm form = new CustomerForm(this);
+
+    private CustomerService service = CustomerService.getInstance();
+    private Grid<Customer> grid = new Grid<>(Customer.class);
+    private TextField filterText = new TextField();
+    private CustomerForm form = new CustomerForm(this);
+    Random random = new Random();
 	
     @Override
     protected void init(VaadinRequest vaadinRequest) {
@@ -99,7 +106,7 @@ public class MyUI extends UI {
         layout.addComponents(toolbar, main);
         */
 
-
+        /*
         // An initial planet tree
         Tree<String> tree = new Tree<>();
         TreeData<String> treeData = new TreeData<>();
@@ -118,11 +125,48 @@ public class MyUI extends UI {
         tree.setDataProvider(inMemoryDataProvider);
         tree.expand("Earth"); // Expand programmatically
         layout.addComponent(tree);
-
+        */
 
         // Tree Grid
-//        TreeDataProvider<Project> dataProvider = (TreeDataProvider<Project>) treeGrid.getDataProvider();
+        TreeGrid<Project> treeGrid = new TreeGrid<>();
+        treeGrid.setItems(generateProjectsForYears(2010, 2016), Project::getSubProjects);
+
+        treeGrid.addColumn(Project::getName).setCaption("Project Name").setId("name-column");
+        treeGrid.addColumn(Project::getHoursDone).setCaption("Hours Done");
+        treeGrid.addColumn(Project::getLastModified).setCaption("Last Modified");
+
+        treeGrid.addCollapseListener(event -> {
+            Notification.show(
+                    "Project '" + event.getCollapsedItem().getName() + "' collapsed.",
+                    Notification.Type.TRAY_NOTIFICATION);
+        });
+        treeGrid.addExpandListener(event -> {
+            Notification.show(
+                    "Project '" + event.getExpandedItem().getName()+ "' expanded.",
+                    Notification.Type.TRAY_NOTIFICATION);
+        });
+        layout.addComponent(treeGrid);
+
         setContent(layout);
+    }
+
+    private List<Project> generateProjectsForYears(int startYear, int endYear) {
+        List<Project> projects = new ArrayList<>();
+
+        for (int year = startYear; year <= endYear; year++) {
+            Project yearProject = new Project("Year " + year);
+
+            for (int i = 1; i < 2 + random.nextInt(5); i++) {
+                Project customerProject = new Project("Customer Project " + i);
+                customerProject.setSubProjects(Arrays.asList(
+                        new LeafProject("Implementation", random.nextInt(100), year),
+                        new LeafProject("Planning", random.nextInt(10), year),
+                        new LeafProject("Prototyping", random.nextInt(20), year)));
+                yearProject.addSubProject(customerProject);
+            }
+            projects.add(yearProject);
+        }
+        return projects;
     }
 
     public void updateList() {
@@ -137,41 +181,64 @@ public class MyUI extends UI {
     }
 }
 
-class Project implements HierarchicalDataProvider {
+class LeafProject extends Project {
 
-    @Override
-    public int getChildCount(HierarchicalQuery hierarchicalQuery) {
-        return 0;
+    private int hoursDone;
+    private Date lastModified;
+    Random random = new Random();
+
+    public LeafProject(String name, int hoursDone, int year) {
+        super(name);
+        this.hoursDone = hoursDone;
+        lastModified = new Date(year - 1900, random.nextInt(12),
+                random.nextInt(10));
     }
 
     @Override
-    public Stream fetchChildren(HierarchicalQuery hierarchicalQuery) {
-        return null;
+    public int getHoursDone() {
+        return hoursDone;
     }
 
     @Override
-    public boolean hasChildren(Object o) {
-        return false;
+    public Date getLastModified() {
+        return lastModified;
+    }
+}
+
+class Project {
+
+    private List<Project> subProjects = new ArrayList<>();
+    private String name;
+
+    public Project(String name) {
+        this.name = name;
     }
 
-    @Override
-    public boolean isInMemory() {
-        return false;
+    public String getName() {
+        return name;
     }
 
-    @Override
-    public void refreshItem(Object o) {
-
+    public List<Project> getSubProjects() {
+        return subProjects;
     }
 
-    @Override
-    public void refreshAll() {
-
+    public void setSubProjects(List<Project> subProjects) {
+        this.subProjects = subProjects;
     }
 
-    @Override
-    public Registration addDataProviderListener(
-            DataProviderListener dataProviderListener) {
-        return null;
+    public void addSubProject(Project subProject) {
+        subProjects.add(subProject);
+    }
+
+    public int getHoursDone() {
+        return getSubProjects().stream()
+                .map(project -> project.getHoursDone())
+                .reduce(0, Integer::sum);
+    }
+
+    public Date getLastModified() {
+        return getSubProjects().stream()
+                .map(project -> project.getLastModified())
+                .max(Date::compareTo).orElse(null);
     }
 }
