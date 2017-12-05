@@ -3,3 +3,4 @@ target/*
 .settings/*
 .vaadin-designer2/*
 *.iml
+/target/
