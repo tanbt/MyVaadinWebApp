@@ -11,6 +11,7 @@ import com.vaadin.myvaadinwebapp.views.LoginView;
 import com.vaadin.myvaadinwebapp.views.MainView;
 import com.vaadin.myvaadinwebapp.widgets.FilterBar;
 import com.vaadin.navigator.Navigator;
+import com.vaadin.navigator.PushStateNavigation;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Button;
@@ -29,6 +30,7 @@ import com.vaadin.ui.themes.ValoTheme;
  * overridden to add component to the user interface and initialize non-component functionality.
  */
 @Theme("mytheme")
+@PushStateNavigation
 public class MyUI extends UI {
 
     private CustomerService service = CustomerService.getInstance();
