@@ -3,6 +3,13 @@ myvaadinwebapp
 
 Template for a simple Vaadin application that only requires a Servlet 3.0 container to run.
 
+References
+========
+* Add a new view
+  * https://vaadin.com/blog/community-answer-implementing-a-side-menu-with-view-navigation
+  * https://vaadin.com/docs/v8/framework/advanced/advanced-navigator.html
+  * https://vaadin.com/docs/v8/bakeryfw8/adding-a-view.html
+  * https://demo.vaadin.com/sampler/#foundation/advanced/navigator
 
 Workflow
 ========

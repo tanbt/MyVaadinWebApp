@@ -6,7 +6,11 @@ import javax.servlet.annotation.WebServlet;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
+import com.vaadin.myvaadinwebapp.views.DefaultView;
+import com.vaadin.myvaadinwebapp.views.LoginView;
+import com.vaadin.myvaadinwebapp.views.MainView;
 import com.vaadin.myvaadinwebapp.widgets.FilterBar;
+import com.vaadin.navigator.Navigator;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Button;
@@ -15,6 +19,7 @@ import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * This UI is the application entry point. A UI may either represent a browser window
@@ -76,8 +81,28 @@ public class MyUI extends UI {
         form.setSizeFull();
         //main.setExpandRatio(grid, 1);		//This line will hide the form (the second element)
 
-        layout.addComponents(toolbar, main);
-        setContent(layout);
+        //layout.addComponents(toolbar, main);
+        //setContent(layout);
+
+        Button view1 =new Button("Main View", e -> getNavigator().navigateTo
+                (MainView.MAINVIEW));
+        view1.addStyleNames(ValoTheme.BUTTON_LINK, ValoTheme.MENU_ITEM);
+        Button view2 =new Button("Login View", e -> getNavigator().navigateTo
+                (LoginView.LOGINVIEW));
+        view2.addStyleNames(ValoTheme.BUTTON_LINK, ValoTheme.MENU_ITEM);
+
+        CssLayout menu =new CssLayout(view1, view2);
+        menu.addStyleName(ValoTheme.MENU_ROOT);
+
+        CssLayout viewContainer = new CssLayout();
+
+        HorizontalLayout mainLayout = new HorizontalLayout(menu, viewContainer);
+        setContent(mainLayout);
+
+        Navigator navigator = new Navigator(this, viewContainer);
+        navigator.addView("", DefaultView.class);
+        navigator.addView(MainView.MAINVIEW, MainView.class);
+        navigator.addView(LoginView.LOGINVIEW, LoginView.class);
     }
 
     public void updateList(String keyword) {
