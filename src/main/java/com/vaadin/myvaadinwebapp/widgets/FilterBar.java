@@ -2,6 +2,7 @@ package com.vaadin.myvaadinwebapp.widgets;
 
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.myvaadinwebapp.MyUI;
+import com.vaadin.myvaadinwebapp.views.MainView;
 import com.vaadin.shared.ui.ValueChangeMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CssLayout;
@@ -27,7 +28,7 @@ public class FilterBar extends CssLayout {
         addComponents(filterText, clearFilterText);
     }
 
-    public void addValueChangeListener(MyUI myUI) {
+    public void addValueChangeListener(MainView myUI) {
         filterText.addValueChangeListener(e -> myUI.updateList(filterText
                 .getValue()));
     }

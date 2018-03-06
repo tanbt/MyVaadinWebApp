@@ -2,15 +2,16 @@ package com.vaadin.myvaadinwebapp;
 
 import com.vaadin.data.Binder;
 import com.vaadin.event.ShortcutAction.KeyCode;
+import com.vaadin.myvaadinwebapp.views.MainView;
 
 public class CustomerForm extends CustomerFormDesign {
 	private CustomerService service = CustomerService.getInstance();
 	private Customer customer;
-	private MyUI myUI;
+	private MainView myUI;
 	
 	private Binder<Customer> binder = new Binder<>(Customer.class);
 
-	public CustomerForm(MyUI myUI) {
+	public CustomerForm(MainView myUI) {
 	    this.myUI = myUI;
 	    status.setItems(CustomerStatus.values());
 	    save.setClickShortcut(KeyCode.ENTER);
