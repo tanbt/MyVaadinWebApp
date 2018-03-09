@@ -9,6 +9,7 @@ import com.vaadin.addon.charts.model.DataLabels;
 import com.vaadin.addon.charts.model.DataSeries;
 import com.vaadin.addon.charts.model.DataSeriesItem;
 import com.vaadin.addon.charts.model.PlotOptionsPie;
+import com.vaadin.addon.charts.model.Tooltip;
 import com.vaadin.navigator.View;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.VerticalLayout;
@@ -31,14 +32,21 @@ public class HomeView extends VerticalLayout implements View {
         addComponent(chart);
 
         Configuration conf = chart.getConfiguration();
+
+        Tooltip tooltip = new Tooltip();
+        tooltip.setValueDecimals(1);
+        tooltip.setPointFormat("{series.name}: <b>{point.percentage}%</b>");
+        conf.setTooltip(tooltip);
+
         conf.setTitle("Browser market shares at a specific website, 2010");
         PlotOptionsPie plotOptions = new PlotOptionsPie();
         plotOptions.setCursor(Cursor.POINTER);
+        plotOptions.setShowInLegend(true);
+
         DataLabels dataLabels = new DataLabels();
-        dataLabels.setEnabled(true);
-        dataLabels
-                .setFormatter("'<b>'+ this.point.name +'</b>: '+ this.percentage +' %'");
+        dataLabels.setEnabled(false);
         plotOptions.setDataLabels(dataLabels);
+
         conf.setPlotOptions(plotOptions);
 
         final DataSeries series = new DataSeries();
