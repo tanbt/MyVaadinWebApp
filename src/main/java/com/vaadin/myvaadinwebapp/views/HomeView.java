@@ -25,9 +25,12 @@ public class HomeView extends VerticalLayout implements View {
     public static final String HOMEVIEW = "home";
 
     public HomeView() {
-        final VerticalLayout layout = new VerticalLayout();
         setMargin(true);
 
+        addPieChart();
+    }
+
+    void addPieChart() {
         Chart chart = new Chart(ChartType.PIE);
         addComponent(chart);
 
@@ -40,6 +43,7 @@ public class HomeView extends VerticalLayout implements View {
 
         conf.setTitle("Browser market shares at a specific website, 2010");
         PlotOptionsPie plotOptions = new PlotOptionsPie();
+        plotOptions.setAllowPointSelect(true);
         plotOptions.setCursor(Cursor.POINTER);
         plotOptions.setShowInLegend(true);
 
@@ -53,23 +57,18 @@ public class HomeView extends VerticalLayout implements View {
         series.add(new DataSeriesItem("Firefox", 45.0));
         series.add(new DataSeriesItem("IE", 26.8));
         DataSeriesItem chrome = new DataSeriesItem("Chrome", 12.8);
-        chrome.setSliced(true);
-        chrome.setSelected(true);
         series.add(chrome);
         series.add(new DataSeriesItem("Safari", 8.5));
         series.add(new DataSeriesItem("Opera", 6.2));
         series.add(new DataSeriesItem("Others", 0.7));
         conf.setSeries(series);
 
-        chart.addPointClickListener(new PointClickListener() {
-
-            @Override
-            public void onClick(PointClickEvent event) {
-                Notification.show("Click: "
-                        + series.get(event.getPointIndex()).getName());
-            }
+        chart.addPointClickListener(event -> Notification
+                .show("Click: " + series.get(event.getPointIndex()).getName()));
+        chart.addLegendItemClickListener(event -> {
+            DataSeriesItem item = ((DataSeries) event.getSeries()).get(event.getSeriesItemIndex());
+            Notification.show(String.format("%s: %.2f%%", item.getName(), item.getY()));
         });
-
         chart.drawChart(conf);
     }
 
