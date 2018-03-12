@@ -4,12 +4,17 @@ import com.vaadin.addon.charts.PointClickEvent;
 import com.vaadin.addon.charts.PointClickListener;
 import com.vaadin.addon.charts.model.ChartType;
 import com.vaadin.addon.charts.model.Configuration;
+import com.vaadin.addon.charts.model.Credits;
 import com.vaadin.addon.charts.model.Cursor;
 import com.vaadin.addon.charts.model.DataLabels;
 import com.vaadin.addon.charts.model.DataSeries;
 import com.vaadin.addon.charts.model.DataSeriesItem;
+import com.vaadin.addon.charts.model.ListSeries;
+import com.vaadin.addon.charts.model.PlotOptionsColumn;
 import com.vaadin.addon.charts.model.PlotOptionsPie;
+import com.vaadin.addon.charts.model.Title;
 import com.vaadin.addon.charts.model.Tooltip;
+import com.vaadin.addon.charts.model.XAxis;
 import com.vaadin.navigator.View;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.VerticalLayout;
@@ -27,12 +32,41 @@ public class HomeView extends VerticalLayout implements View {
     public HomeView() {
         setMargin(true);
 
-        addPieChart();
+        Chart chart1 = getPieChart();
+        Chart chart2 = getColumnChart();
+        addComponents(chart1, chart2);
     }
 
-    void addPieChart() {
+    Chart getColumnChart() {
+        Chart chart = new Chart(ChartType.COLUMN);
+
+        Configuration conf = chart.getConfiguration();
+        conf.setTitle(new Title("Column chart with negative values"));
+
+        PlotOptionsColumn column = new PlotOptionsColumn();
+        column.setMinPointLength(3);
+        conf.setPlotOptions(column);
+
+        XAxis xAxis = new XAxis();
+        xAxis.setCategories("Apples", "Oranges", "Pears", "Grapes", "Bananas");
+        conf.addxAxis(xAxis);
+
+        Tooltip tooltip = new Tooltip();
+        tooltip.setFormatter("function() { return ''+ this.series.name +': '+ this.y +'';}");
+        conf.setTooltip(tooltip);
+
+        conf.setCredits(new Credits(false));
+
+        conf.addSeries(new ListSeries("John", 5, 0.1, 4, 7, 2));
+        conf.addSeries(new ListSeries("Jane", 2, -2, -0.1, 2, 1));
+        conf.addSeries(new ListSeries("Joe", 3, 4, 4, -2, 5));
+
+        chart.drawChart(conf);
+        return chart;
+    }
+
+    Chart getPieChart() {
         Chart chart = new Chart(ChartType.PIE);
-        addComponent(chart);
 
         Configuration conf = chart.getConfiguration();
 
@@ -70,6 +104,7 @@ public class HomeView extends VerticalLayout implements View {
             Notification.show(String.format("%s: %.2f%%", item.getName(), item.getY()));
         });
         chart.drawChart(conf);
+        return chart;
     }
 
 }
