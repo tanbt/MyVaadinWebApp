@@ -15,6 +15,7 @@ import com.vaadin.addon.charts.model.PlotOptionsPie;
 import com.vaadin.addon.charts.model.Title;
 import com.vaadin.addon.charts.model.Tooltip;
 import com.vaadin.addon.charts.model.XAxis;
+import com.vaadin.addon.charts.model.YAxis;
 import com.vaadin.navigator.View;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.VerticalLayout;
@@ -39,6 +40,7 @@ public class HomeView extends VerticalLayout implements View {
 
     Chart getColumnChart() {
         Chart chart = new Chart(ChartType.COLUMN);
+        chart.setWidth("500px");
 
         Configuration conf = chart.getConfiguration();
         conf.setTitle(new Title("Column chart with negative values"));
@@ -50,6 +52,12 @@ public class HomeView extends VerticalLayout implements View {
         XAxis xAxis = new XAxis();
         xAxis.setCategories("Apples", "Oranges", "Pears", "Grapes", "Bananas");
         conf.addxAxis(xAxis);
+
+        YAxis yAxis = new YAxis();
+        yAxis.getLabels().getStyle().setFontSize("8px");
+        yAxis.setTitle("Y Title");
+        yAxis.getTitle().getStyle().setFontSize("28px");
+        conf.addyAxis(yAxis);
 
         Tooltip tooltip = new Tooltip();
         tooltip.setFormatter("function() { return ''+ this.series.name +': '+ this.y +'';}");
